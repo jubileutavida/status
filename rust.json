@@ -1,1 +1,957 @@
+Base globals
+inline static constexpr uintptr_t il2cpphandle = 0x11A88F30;
 
+struct rust_globals {
+    uintptr_t il2cpphandle             = 0x11A88F30; // GameAssembly.dll RVA
+    uintptr_t base_networkable_static  = 0x115B1A70;  // static-fields base
+    uintptr_t main_camera_c            = 0x115BB318;  // static-fields base
+};
+Copy
+base_networkable
+struct base_networkable {
+    uintptr_t base_networkable     = 0x115B1A70;
+    uintptr_t static_fields        =       0xB8;
+    uintptr_t wrapper_class_ptr    =        0x8;
+    uintptr_t parent_static_fields =       0x10;
+    uintptr_t entities             =       0x10;
+    uintptr_t hv_offset            =       0x18;
+};
+Copy
+camera
+struct camera {
+    uintptr_t main_camera_c = 0x115BB318;
+    uintptr_t camera_static =       0xB8;
+    uintptr_t camera_object =       0x30;
+    uintptr_t entity        =       0x10;
+    uintptr_t view_matrix   =      0x2FC; //Unity native camera state
+    uintptr_t position      =      0x444; //Unity native camera state
+    uintptr_t field_of_view =      0x170; //Unity native camera state
+};
+Copy
+camera_state
+struct camera_state {
+    // unresolved (omitted): position, rotation, fov, nearPlane, farPlane, aspect
+};
+Copy
+base_entity
+struct base_entity {
+    uintptr_t bounds = 0x18C;
+    uintptr_t model  = 0x1B8;
+    uintptr_t flags  = 0x1C0;
+    // unresolved (omitted): triggers
+};
+Copy
+base_combat_entity
+struct base_combat_entity {
+    uintptr_t lifestate             = 0x2A8;
+    uintptr_t mark_attacker_hostile = 0x2AE;
+    uintptr_t model                 = 0x1B8;
+    uintptr_t _health               = 0x2B4;
+    uintptr_t _maxHealth            = 0x2B8;
+    uintptr_t skeleton_properties   = 0x230;
+};
+Copy
+base_player
+struct base_player {
+    uintptr_t display_name     = 0x390;
+    uintptr_t player_rigidbody = 0x3F0;
+    uintptr_t player_input     = 0x728;
+    uintptr_t player_inventory = 0x308;
+    uintptr_t base_movement    = 0x510;
+    uintptr_t current_team     = 0x550;
+    uintptr_t cl_active_item   = 0x580;
+    uintptr_t player_eyes      = 0x708;
+    uintptr_t player_flags     = 0x6D0;
+    uintptr_t held_entity      = 0x5D0;
+    uintptr_t player_model     = 0x2E8;
+};
+Copy
+player_eyes
+struct player_eyes {
+    uintptr_t bodyRotation = 0x50; //silent-aim write target (NOT eyeRotation)
+    uintptr_t eye_rotation = 0x6C;
+    // unresolved (omitted): viewOffset, worldPosition
+};
+Copy
+player_input
+struct player_input {
+    uintptr_t rotation   = 0x34;
+    uintptr_t bodyAngles = 0x44;
+};
+Copy
+player_walk_movement
+struct player_walk_movement {
+    // unresolved (omitted): owner, grounded, GravityMultiplier, max_slope, max_angle_climbing, max_angle_sliding, GroundAngle, GroundAngleNew, GroundTime, JumpTime, LandTime, velocity, TargetMovement, flying
+};
+Copy
+player_visual_state
+struct player_visual_state {
+    // unresolved (omitted): isVisible, lastVisible, position
+};
+Copy
+base_movement (obfuscated)
+struct base_movement {
+    uintptr_t owner     = 0x30; // obfuscated — BasePlayer backref
+    uintptr_t vector3_0 = 0x38; // obfuscated — likely targetMovement / groundNormal
+    uintptr_t vector3_1 = 0x44; // obfuscated — likely the second movement vector
+    uintptr_t single_0  = 0x50; // obfuscated
+    uintptr_t single_1  = 0x54; // obfuscated — first Single after the Vector3 pair
+    uintptr_t single_2  = 0x58; // obfuscated
+    uintptr_t single_3  = 0x5C; // obfuscated
+    uintptr_t single_4  = 0x60; // obfuscated
+    // unresolved (omitted): bool_0, single_5
+};
+Copy
+model_state
+// model_state: CLASS NOT FOUND — no type in this build is named ModelState / Rust.ModelState / PlayerModelState, and the name-search section confirms no class name even CONTAINS "ModelState".  All offsets below are 0; BasePlayer.model_state must stay hand-mapped.
+struct model_state {
+    // unresolved (omitted): flags, waterFactor, groundAngle, poseType, sleeping, ducked, aiming, onLadder, position, velocity
+};
+Copy
+player_model
+struct player_model {
+    uintptr_t jawBone          =  0xE8;
+    uintptr_t neckBone         =  0xF0;
+    uintptr_t headBone         =  0xF8;
+    uintptr_t skinnedMultiMesh =  0xB0;
+    uintptr_t position         = 0x148;
+    uintptr_t velocity         = 0x164;
+    uintptr_t heldEntity       = 0x398;
+    // unresolved (omitted): isNpc
+};
+Copy
+model
+struct model {
+    uintptr_t collision      = 0x20;
+    uintptr_t rootBone       = 0x28;
+    uintptr_t headBone       = 0x30;
+    uintptr_t eyeBone        = 0x38;
+    uintptr_t animator       = 0x40;
+    uintptr_t skeleton       = 0x48;
+    uintptr_t boneTransforms = 0x50;
+    uintptr_t boneNames      = 0x58;
+};
+Copy
+skinned_multi_mesh
+struct skinned_multi_mesh {
+    uintptr_t renderers = 0x40;
+    // unresolved (omitted): model
+};
+Copy
+local_player_static
+// local_player_static: CLASS NOT FOUND — LocalPlayer / Rust.LocalPlayer absent this build.  Do NOT use MainCamera's typeinfo.  Resolve the local player via BaseNetworkable entity walk / camera-proximity instead.
+struct local_player_static {
+    uintptr_t static_fields = 0xB8;
+    // unresolved (omitted): type_info, entity
+};
+Copy
+convar_graphics
+struct convar_graphics {
+    uintptr_t static_fields = 0xB8;
+    // unresolved (omitted): type_info, fov
+};
+Copy
+player_inventory + item_container
+struct player_inventory {
+    uintptr_t wear = 0x38;
+    uintptr_t main = 0x58;
+    uintptr_t loot = 0x48;
+    uintptr_t belt = 0x60;
+};
+
+struct item_container {
+    uintptr_t item_list = 0x50;
+    uintptr_t flags     = 0x38;
+};
+
+struct item {
+    uintptr_t definition  = 0xC0;
+    uintptr_t amount      = 0x98;
+    uintptr_t uid         = 0xD8;
+    uintptr_t held_entity = 0xA0; //EntityRef/NetworkableId, not HeldEntity*
+};
+
+struct item_id {
+    uintptr_t value = 0x10;
+};
+
+struct item_definition {
+    uintptr_t itemid      = 0x20;
+    uintptr_t shortname   = 0x28;
+    uintptr_t displayName = 0x40;
+    uintptr_t category    = 0x58;
+    uintptr_t stackable   = 0x78;
+    uintptr_t iconSprite  = 0x50;
+    uintptr_t rarity      = 0x94;
+    uintptr_t condition   = 0xB8;
+};
+
+struct item_icon {
+    uintptr_t static_fields = 0xB8;
+    uintptr_t iconImage     = 0xA8;
+    // unresolved (omitted): type_info, background, itemRef
+};
+
+struct ammo_types {
+    uintptr_t value = 0x10;
+};
+Copy
+held_entity + world_item
+struct held_entity {
+    uintptr_t viewModel          = 0x200;
+    uintptr_t worldModelAnimator = 0x218;
+    uintptr_t handBone           = 0x260;
+    uintptr_t holdInfo           = 0x270;
+    uintptr_t isBuildingTool     = 0x28C;
+    uintptr_t forcedOwner        = 0x290;
+    uintptr_t hostileScore       = 0x2AC;
+    uintptr_t item_owner         = 0x250;
+    uintptr_t ownerItemUID       = 0x2E0;
+};
+
+struct world_item {
+    uintptr_t allowPickup = 0x200;
+    uintptr_t item        = 0x208;
+};
+Copy
+base_projectile / recoil / magazine / projectile
+struct base_projectile {
+    uintptr_t projectileVelocityScale    = 0x38C;
+    uintptr_t automatic                  = 0x390;
+    uintptr_t reloadTime                 = 0x3D0;
+    uintptr_t canUnloadAmmo              = 0x3D4;
+    uintptr_t primaryMagazine            = 0x3D8;
+    uintptr_t fractionalReload           = 0x3E0;
+    uintptr_t aimSway                    = 0x3F8;
+    uintptr_t aimSwaySpeed               = 0x3FC;
+    uintptr_t recoil                     = 0x400;
+    uintptr_t aimCone                    = 0x410;
+    uintptr_t hipAimCone                 = 0x414;
+    uintptr_t aimconePenaltyMax          = 0x41C;
+    uintptr_t stancePenaltyScale         = 0x428;
+    uintptr_t hasADS                     = 0x42C;
+    uintptr_t isBurstWeapon              = 0x437;
+    uintptr_t canChangeFireModes         = 0x438;
+    uintptr_t internalBurstFireRateScale = 0x440;
+    uintptr_t internalBurstAimConeScale  = 0x444;
+    uintptr_t aimconePenaltyPerShot      = 0x418;
+    // unresolved (omitted): aimconePenalty, stancePenalty, sightAimConeScale
+};
+
+struct recoil_properties {
+    uintptr_t recoilYawMin             = 0x18;
+    uintptr_t recoilYawMax             = 0x1C;
+    uintptr_t recoilPitchMin           = 0x20;
+    uintptr_t recoilPitchMax           = 0x24;
+    uintptr_t timeToTakeMin            = 0x28;
+    uintptr_t timeToTakeMax            = 0x2C;
+    uintptr_t ADSScale                 = 0x30;
+    uintptr_t movementPenalty          = 0x34;
+    uintptr_t clampPitch               = 0x38;
+    uintptr_t pitchCurve               = 0x40;
+    uintptr_t yawCurve                 = 0x48;
+    uintptr_t useCurves                = 0x50;
+    uintptr_t shotsUntilMax            = 0x54;
+    uintptr_t maxRecoilRadius          = 0x58;
+    uintptr_t overrideAimconeWithCurve = 0x5C;
+    uintptr_t aimconeCurveScale        = 0x60;
+    uintptr_t aimconeCurve             = 0x68;
+    uintptr_t aimconeProbabilityCurve  = 0x70;
+    uintptr_t newRecoilOverride        = 0x80;
+};
+
+struct magazine {
+    uintptr_t capacity   = 0x18;
+    uintptr_t contents   = 0x1C;
+    uintptr_t ammoType   = 0x20;
+    uintptr_t definition = 0x10;
+};
+
+struct projectile {
+    uintptr_t initialVelocity          =  0x28;
+    uintptr_t drag                     =  0x34;
+    uintptr_t gravityModifier          =  0x38;
+    uintptr_t thickness                =  0x3C;
+    uintptr_t initialDistance          =  0x44;
+    uintptr_t initialOrientation       =  0x48;
+    uintptr_t changeInitialOrientation =  0x40;
+    uintptr_t remainInWorld            =  0x54;
+    uintptr_t stickProbability         =  0x58;
+    uintptr_t breakProbability         =  0x5C;
+    uintptr_t conditionLoss            =  0x60;
+    uintptr_t ricochetChance           =  0x64;
+    uintptr_t penetrationPower         =  0x68;
+    uintptr_t penetratesVehicles       =  0x6D;
+    uintptr_t waterIntegrityLoss       =  0x70;
+    uintptr_t damageProperties         =  0x78;
+    uintptr_t damageDistances          =  0x80;
+    uintptr_t damageMultipliers        =  0x88;
+    uintptr_t damageTypes              =  0x90;
+    uintptr_t tumbleSpeed              =  0xCC;
+    uintptr_t swimScale                =  0xF0;
+    uintptr_t swimSpeed                =  0xFC;
+    uintptr_t owner                    = 0x120; //obfuscated — BasePlayer backref
+    uintptr_t projectileID             = 0x130; //obfuscated — first Int32 after owner
+    uintptr_t traveledDistance         = 0x13C; //obfuscated — first Single after owner ints
+    uintptr_t traveledTime             = 0x140; //obfuscated — second Single after owner ints
+    uintptr_t sentPosition             = 0x15C; //obfuscated — first Vector3 after owner
+    uintptr_t previousPosition         = 0x168; //obfuscated — second Vector3 (NOT velocity)
+    uintptr_t previousVelocity         = 0x180; //obfuscated — live velocity candidate
+    uintptr_t currentPosition          = 0x15C; //alias of sentPosition — live pos write target
+    uintptr_t currentVelocity          = 0x180; //alias of previousVelocity — NOT previousPosition
+    // unresolved (omitted): maxDistance
+};
+Copy
+Weapon subclasses
+struct attack_entity {
+    uintptr_t deployDelay             = 0x2E8;
+    uintptr_t repeatDelay             = 0x2EC;
+    uintptr_t animationDelay          = 0x2F0;
+    uintptr_t effectiveRange          = 0x2F4;
+    uintptr_t npcDamageScale          = 0x2F8;
+    uintptr_t attackLengthMin         = 0x2FC;
+    uintptr_t attackLengthMax         = 0x300;
+    uintptr_t attackSpacing           = 0x304;
+    uintptr_t aiAimSwayOffset         = 0x308;
+    uintptr_t aiAimCone               = 0x30C;
+    uintptr_t aiOnlyInRange           = 0x310;
+    uintptr_t CloseRangeAddition      = 0x314;
+    uintptr_t MediumRangeAddition     = 0x318;
+    uintptr_t LongRangeAddition       = 0x31C;
+    uintptr_t CanUseAtMediumRange     = 0x320;
+    uintptr_t CanUseAtLongRange       = 0x321;
+    uintptr_t recoilCompDelayOverride = 0x338;
+    uintptr_t wantsRecoilComp         = 0x33C;
+    uintptr_t noHeadshots             = 0x33E;
+};
+
+struct flint_strike {
+    // unresolved (omitted): successFraction, strikeRecoil, sparkFrame
+};
+
+struct base_melee {
+    uintptr_t canThrowAsProjectile      = 0x380;
+    uintptr_t canThrowAsEntity          = 0x381;
+    uintptr_t onlyThrowAsProjectile     = 0x384;
+    uintptr_t ThrowFullStack            = 0x385;
+    uintptr_t damageProperties          = 0x388;
+    uintptr_t damageTypes               = 0x390;
+    uintptr_t deployableDamageOverrides = 0x398;
+    uintptr_t maxDistance               = 0x3A0;
+    uintptr_t attackRadius              = 0x3A4;
+    uintptr_t isAutomatic               = 0x3A8;
+    uintptr_t blockSprintOnAttack       = 0x3A9;
+    uintptr_t canUntieCrates            = 0x3AA;
+    uintptr_t strikeFX                  = 0x3B8;
+    uintptr_t useStandardHitEffects     = 0x3C0;
+    uintptr_t aiStrikeDelay             = 0x3C4;
+    uintptr_t swingEffect               = 0x3C8;
+    uintptr_t materialStrikeFX          = 0x3D0;
+    uintptr_t heartStress               = 0x3D8;
+    uintptr_t gathering                 = 0x3E0;
+};
+
+struct base_launcher {
+    uintptr_t initialSpeedMultiplier = 0x4B8;
+};
+
+struct item_mod_projectile {
+    uintptr_t projectileObject         = 0x20;
+    uintptr_t numProjectiles           = 0x38;
+    uintptr_t projectileSpread         = 0x3C;
+    uintptr_t projectileVelocity       = 0x40;
+    uintptr_t projectileVelocitySpread = 0x44;
+    uintptr_t ammoType                 = 0x30;
+    uintptr_t ammoSubType              = 0x34;
+    uintptr_t useCurve                 = 0x48;
+    uintptr_t spreadScalar             = 0x50;
+    uintptr_t attackEffectOverride     = 0x58;
+    uintptr_t category                 = 0x68;
+};
+
+struct item_mod_container {
+    uintptr_t capacity            = 0x30;
+    uintptr_t maxStackSize        = 0x34;
+    uintptr_t containerVolume     = 0x38;
+    uintptr_t canLootInWorld      = 0x3C;
+    uintptr_t maxWeight           = 0x44;
+    uintptr_t containerFlags      = 0x4C;
+    uintptr_t onlyAllowedContents = 0x50;
+    uintptr_t onlyAllowedItemType = 0x58;
+    uintptr_t availableSlots      = 0x60;
+    uintptr_t validItemWhitelist  = 0x68;
+};
+Copy
+Storage / loot / gather
+struct storage_container {
+    uintptr_t inventorySlots              = 0x320;
+    uintptr_t panelName                   = 0x330;
+    uintptr_t panelTitle                  = 0x338;
+    uintptr_t isLootable                  = 0x32D;
+    uintptr_t isLockable                  = 0x32E;
+    uintptr_t isMonitorable               = 0x32F;
+    uintptr_t dropsLoot                   = 0x324;
+    uintptr_t dropLootDestroyPercent      = 0x328;
+    uintptr_t allowedContents             = 0x340;
+    uintptr_t allowedItem                 = 0x348;
+    uintptr_t maxStackSize                = 0x368;
+    uintptr_t needsBuildingPrivilegeToUse = 0x36C;
+    uintptr_t onlyAcceptCategory          = 0x398;
+    uintptr_t onlyOneUser                 = 0x39C;
+    uintptr_t dropPosition                = 0x380;
+    uintptr_t dropVelocity                = 0x38C;
+    // unresolved (omitted): inventory
+};
+
+struct loot_container {
+    uintptr_t destroyOnEmpty               = 0x3A8;
+    uintptr_t lootDefinition               = 0x3B0;
+    uintptr_t maxDefinitionsToSpawn        = 0x3B8;
+    uintptr_t minSecondsBetweenRefresh     = 0x3BC;
+    uintptr_t maxSecondsBetweenRefresh     = 0x3C0;
+    uintptr_t initialLootSpawn             = 0x3C4;
+    uintptr_t xpLootedScale                = 0x3C8;
+    uintptr_t scrapAmount                  = 0x3D4;
+    uintptr_t LootSpawnSlots               = 0x3E0;
+    uintptr_t SpawnType                    = 0x3E8;
+    uintptr_t clanScoreEventForFirstLooter = 0x3EC;
+    // unresolved (omitted): inventory
+};
+
+struct ore_resource_entity {
+    uintptr_t bonusPrefab        = 0x258;
+    uintptr_t finishEffect       = 0x260;
+    uintptr_t bonusFailEffect    = 0x268;
+    uintptr_t useHotspotMinigame = 0x270;
+    uintptr_t bonusSound         = 0x278;
+    uintptr_t heightOffset       = 0x280;
+};
+
+struct resource_entity {
+    uintptr_t startHealth         = 0x200;
+    uintptr_t baseProtection      = 0x208;
+    uintptr_t skipDecorComponents = 0x214;
+};
+
+struct collectible_entity {
+    uintptr_t itemName                     = 0x200;
+    uintptr_t itemList                     = 0x208;
+    uintptr_t pickupEffect                 = 0x210;
+    uintptr_t xpScale                      = 0x218;
+    uintptr_t suppressGatherRateMultiplier = 0x21C;
+};
+
+struct growable_entity {
+    uintptr_t Properties    = 0x348;
+    uintptr_t SourceItemDef = 0x350;
+    uintptr_t state         = 0x358; // obfuscated name — matched by PlantProperties.State type
+    uintptr_t plantSkin     = 0x2E0; // obfuscated name — matched by PlantSkin type
+    // unresolved (omitted): genes
+};
+Copy
+Traps / turrets / explosives
+struct auto_turret {
+    uintptr_t authorizedPlayers = 0x3A8; // obfuscated name — matched by HashSet<System.UInt64> type
+    uintptr_t target            = 0x4A0;
+    uintptr_t sightRange        = 0x4D8;
+    uintptr_t aimCone           = 0x538;
+    uintptr_t targetTrigger     = 0x480;
+    uintptr_t gun_fire_effect   = 0x3F0;
+    uintptr_t bulletEffect      = 0x3F8;
+    uintptr_t bulletSpeed       = 0x400;
+    uintptr_t laserBeam         = 0x420;
+    uintptr_t playAmbientSounds = 0x410;
+    // unresolved (omitted): booting, peacekeeper
+};
+
+struct gun_trap {
+    uintptr_t gun_fire_effect = 0x3A8;
+    uintptr_t bulletEffect    = 0x3B0;
+    uintptr_t triggeredEffect = 0x3B8;
+    uintptr_t muzzlePos       = 0x3C0;
+    uintptr_t eyeTransform    = 0x3C8;
+    uintptr_t numPellets      = 0x3D0;
+    uintptr_t aimCone         = 0x3D4;
+    uintptr_t sensorRadius    = 0x3D8;
+    uintptr_t ammoType        = 0x3E0;
+    uintptr_t trigger         = 0x3E8;
+    // unresolved (omitted): inventory
+};
+
+struct flame_turret {
+    uintptr_t upper             = 0x3A8;
+    uintptr_t arc               = 0x3B0;
+    uintptr_t triggeredDuration = 0x3B4;
+    uintptr_t flameRange        = 0x3B8;
+    uintptr_t flameRadius       = 0x3BC;
+    uintptr_t fuelPerSec        = 0x3C0;
+    uintptr_t eyeTransform      = 0x3C8;
+    uintptr_t damagePerSec      = 0x3D0;
+    uintptr_t trigger           = 0x3F0;
+};
+
+struct timed_explosive {
+    uintptr_t timerAmountMin         = 0x200;
+    uintptr_t timerAmountMax         = 0x204;
+    uintptr_t minExplosionRadius     = 0x208;
+    uintptr_t explosionRadius        = 0x20C;
+    uintptr_t explodeOnContact       = 0x210;
+    uintptr_t canStick               = 0x211;
+    uintptr_t onlyDamageParent       = 0x213;
+    uintptr_t damageTypes            = 0x278;
+    uintptr_t explosionEffectOffset  = 0x224;
+    uintptr_t explosionMatchesNormal = 0x230;
+};
+Copy
+Building / locks / stability / decay
+struct building_block {
+    uintptr_t grade          = 0x350;
+    uintptr_t gradeSecondary = 0x354; // obfuscated — second BuildingGrade.Enum slot
+    uintptr_t construction   = 0x318; // obfuscated name — matched by exact Construction type
+    uintptr_t cachedMesh     = 0x3B8; // obfuscated name — matched by MeshCollider type
+    uintptr_t meshRenderer   = 0x358; // obfuscated name — matched by MeshRenderer type
+    uintptr_t skin           = 0x370; // obfuscated name — matched by ConstructionSkin type
+    uintptr_t CullBushes     = 0x378;
+};
+
+struct door {
+    uintptr_t knockEffect    = 0x358;
+    uintptr_t canTakeLock    = 0x360;
+    uintptr_t hasHatch       = 0x361;
+    uintptr_t canTakeCloser  = 0x362;
+    uintptr_t canTakeKnocker = 0x363;
+    uintptr_t canNpcOpen     = 0x364;
+    uintptr_t canHandOpen    = 0x365;
+    uintptr_t isSecurityDoor = 0x366;
+    uintptr_t canReverseOpen = 0x367;
+};
+
+struct code_lock {
+    uintptr_t keyEnterDialog    = 0x240;
+    uintptr_t effectUnlocked    = 0x248;
+    uintptr_t effectLocked      = 0x250;
+    uintptr_t effectDenied      = 0x258;
+    uintptr_t effectCodeChanged = 0x260;
+    uintptr_t effectShock       = 0x268;
+    uintptr_t keyCodeEntry      = 0x238; // obfuscated name — matched by KeyCodeEntry type
+    uintptr_t hasCode           = 0x270; // obfuscated — first System.Boolean on CodeLock, VERIFY before use
+    // unresolved (omitted): code
+};
+
+struct stability_entity {
+    uintptr_t grounded        = 0x308;
+    uintptr_t stability       = 0x30C; // obfuscated — only Single declared on StabilityEntity
+    uintptr_t cachedStability = 0x310; // obfuscated — first Int32 declared on StabilityEntity
+};
+
+struct decay_entity {
+    uintptr_t canBeDemolished      = 0x2D0;
+    uintptr_t debrisPrefab         = 0x2D8;
+    uintptr_t debrisRotationOffset = 0x2E0;
+    uintptr_t DebrisPositions      = 0x2F0;
+    uintptr_t timePlaced           = 0x2FC;
+    uintptr_t upkeep               = 0x300; // obfuscated name — matched by Upkeep type (was 'decay'/'buildingPrivilege')
+};
+
+struct building_privilege {
+    // unresolved (omitted): inventory, authorizedPlayers, protectedMinutes, upkeepPeriodMinutes
+};
+
+struct key_lock {
+    // unresolved (omitted): keyCode, firstKeyCreated
+};
+Copy
+Corpses / sleeping bag
+struct base_corpse {
+    uintptr_t prefabRagdoll          = 0x2D0;
+    uintptr_t parentEnt              = 0x2D8;
+    uintptr_t blockDamageIfNotGather = 0x2F0;
+    uintptr_t ragdoll                = 0x2E0; // obfuscated name — matched by Ragdoll type
+    uintptr_t resourceDispenser      = 0x2F8; // obfuscated name — matched by ResourceDispenser type
+};
+
+struct lootable_corpse {
+    uintptr_t playerName    = 0x308; // obfuscated — first System.String on LootableCorpse
+    uintptr_t playerSteamID = 0x318; // obfuscated — first System.UInt64 on LootableCorpse
+    // unresolved (omitted): containers
+};
+
+struct player_corpse {
+    uintptr_t playerName    = 0x308; // obfuscated — first System.String on PlayerCorpse
+    uintptr_t playerSteamID = 0x318; // obfuscated — first System.UInt64 on PlayerCorpse
+    uintptr_t containers    = 0x350;
+};
+
+struct sleeping_bag {
+    uintptr_t niceName                 = 0x368;
+    uintptr_t renameDialog             = 0x348;
+    uintptr_t assignDialog             = 0x350;
+    uintptr_t secondsBetweenReuses     = 0x358;
+    uintptr_t perPlayerRespawnCooldown = 0x35C;
+    uintptr_t spawnOffset              = 0x370;
+    uintptr_t respawnCooldowns         = 0x318; // obfuscated name — matched by Dictionary<UInt64,Single> type
+    uintptr_t deployerUserID           = 0x3C0; // obfuscated — first System.UInt64 on SleepingBag
+};
+Copy
+Vehicles
+struct base_vehicle {
+    uintptr_t mountPoints             = 0x3F0;
+    uintptr_t shouldShowHudHealth     = 0x3B2;
+    uintptr_t ignoreDamageFromOutside = 0x3E4;
+    // unresolved (omitted): checkVehicleIsOnGround
+};
+
+struct patrol_helicopter {
+    uintptr_t weakspots         = 0x2D0;
+    uintptr_t rotorPivot        = 0x2D8;
+    uintptr_t mainRotor         = 0x2E0;
+    uintptr_t tailRotor         = 0x2F8;
+    uintptr_t rocket_tube_left  = 0x310;
+    uintptr_t rocket_tube_right = 0x318;
+    uintptr_t left_gun_yaw      = 0x320;
+    uintptr_t left_gun_pitch    = 0x328;
+    uintptr_t spotlightTarget   = 0x408;
+    uintptr_t myAI              = 0x438; // obfuscated name — matched by PatrolHelicopterAI type
+};
+
+struct bradley_apc {
+    uintptr_t viewDistance          = 0x3C4;
+    uintptr_t searchRange           = 0x3C8;
+    uintptr_t engineSound           = 0x2D0;
+    uintptr_t chasisLurchAngleDelta = 0x318;
+    uintptr_t chasisLurchSpeedDelta = 0x31C;
+    // unresolved (omitted): targetTrigger
+};
+Copy
+Decryption routines
+uintptr_t decryption::client_entities(uint64_t a1) {
+    if (!driver.read<uint8_t>(a1 + 0x10))
+        return 0;
+    std::uintptr_t rax = driver.read<std::uintptr_t>(a1 + 0x18);
+    std::uint32_t* rdx = (std::uint32_t*)&rax;
+    std::uint32_t r8d = 0x2;
+    std::uint32_t eax, ecx;
+    do {
+        ecx = *(std::uint32_t*)(rdx);
+        eax = *(std::uint32_t*)(rdx);
+        rdx = (std::uint32_t*)((std::uint8_t*)rdx + 0x4);
+        ecx = ecx ^ 0xC341ED7D;
+        eax = ecx;
+        ecx = ecx << 0x1E;
+        eax = eax >> 0x2;
+        ecx = ecx | eax;
+        ecx = ecx + 0x578817E0;
+        *((std::uint32_t*)rdx - 1) = ecx;
+        --r8d;
+    } while (r8d);
+    return il2cpp_get_handle(rax);
+}
+
+uintptr_t decryption::visiblePlayerList(uint64_t a1) {
+    if (!driver.read<uint8_t>(a1 + 0x10))
+        return 0;
+    std::uintptr_t rax = driver.read<std::uintptr_t>(a1 + 0x18);
+    std::uint32_t* rdx = (std::uint32_t*)&rax;
+    std::uint32_t r8d = 0x2;
+    std::uint32_t eax, ecx;
+    do {
+        ecx = *(std::uint32_t*)(rdx);
+        eax = *(std::uint32_t*)(rdx);
+        rdx = (std::uint32_t*)((std::uint8_t*)rdx + 0x4);
+        ecx = ecx ^ 0xC341ED7D;
+        eax = ecx;
+        ecx = ecx << 0x1E;
+        eax = eax >> 0x2;
+        ecx = ecx | eax;
+        ecx = ecx + 0x578817E0;
+        *((std::uint32_t*)rdx - 1) = ecx;
+        --r8d;
+    } while (r8d);
+    return il2cpp_get_handle(rax);
+}
+
+uintptr_t decryption::entity_list(uint64_t a1) {
+    if (!driver.read<uint8_t>(a1 + 0x10))
+        return 0;
+    std::uintptr_t rax = driver.read<std::uintptr_t>(a1 + 0x18);
+    std::uint32_t* rdx = (std::uint32_t*)&rax;
+    std::uint32_t r8d = 0x2;
+    std::uint32_t eax, ecx;
+    do {
+        ecx = *(std::uint32_t*)(rdx);
+        eax = *(std::uint32_t*)(rdx);
+        rdx = (std::uint32_t*)((std::uint8_t*)rdx + 0x4);
+        ecx = ecx - 0x55362D5A;
+        ecx = ecx ^ 0x931EEE05;
+        eax = ecx;
+        ecx = ecx << 0x19;
+        eax = eax >> 0x7;
+        ecx = ecx | eax;
+        ecx = ecx + 0x2AA8649C;
+        *((std::uint32_t*)rdx - 1) = ecx;
+        --r8d;
+    } while (r8d);
+    return il2cpp_get_handle(rax);
+}
+
+// clActiveItem  — in-place, result is UID not a handle
+// rol 28, add 0x4163CC9A, xor 0x3C9AE79B
+uint64_t clActiveItem(uint64_t a1) {
+    uint32_t* p = (uint32_t*)&a1;
+    for (int i = 0; i < 2; i++) {
+        uint32_t v = p[i];
+        v  = (v << 28) | (v >> 4);
+        v += 0x4163CC9Au;
+        v ^= 0x3C9AE79Bu;
+        p[i] = v;
+    }
+    return a1;
+}
+
+uintptr_t decryption::PlayerInventory(uint64_t a1) {
+    if (!driver.read<uint8_t>(a1 + 0x10))
+        return 0;
+    std::uintptr_t rax = driver.read<std::uintptr_t>(a1 + 0x18);
+    std::uint32_t* rdx = (std::uint32_t*)&rax;
+    std::uint32_t r8d = 0x2;
+    std::uint32_t eax, ecx;
+    do {
+        ecx = *(std::uint32_t*)(rdx);
+        eax = *(std::uint32_t*)(rdx);
+        rdx = (std::uint32_t*)((std::uint8_t*)rdx + 0x4);
+        ecx = ecx ^ 0x599E0586;
+        ecx = ecx + 0x4D4857BE;
+        ecx = ecx ^ 0x78A90F1F;
+        *((std::uint32_t*)rdx - 1) = ecx;
+        --r8d;
+    } while (r8d);
+    return il2cpp_get_handle(rax);
+}
+
+uintptr_t decryption::PlayerEyes(uint64_t a1) {
+    if (!driver.read<uint8_t>(a1 + 0x10))
+        return 0;
+    std::uintptr_t rax = driver.read<std::uintptr_t>(a1 + 0x18);
+    std::uint32_t* rdx = (std::uint32_t*)&rax;
+    std::uint32_t r8d = 0x2;
+    std::uint32_t eax, ecx;
+    do {
+        ecx = *(std::uint32_t*)(rdx);
+        eax = *(std::uint32_t*)(rdx);
+        rdx = (std::uint32_t*)((std::uint8_t*)rdx + 0x4);
+        ecx = ecx ^ 0xB48F505B;
+        ecx = ecx + 0x57105657;
+        ecx = ecx ^ 0xCCA5777B;
+        *((std::uint32_t*)rdx - 1) = ecx;
+        --r8d;
+    } while (r8d);
+    return il2cpp_get_handle(rax);
+}
+
+uint32_t decryption::encrypt_fov(float input) {
+    uint32_t v = std::bit_cast<uint32_t>(input);
+    v = (v << 2) | (v >> 30);
+    v ^= 0xBF1B783Du;
+    v = (v << 5) | (v >> 27);
+    return v;
+}
+
+uint32_t decryption::decrypt_fov(uint32_t v) {
+    v = (v << 27) | (v >> 5);
+    v ^= 0xBF1B783Du;
+    v = (v << 30) | (v >> 2);
+    return v;
+}
+
+// --- PlayerWalkMovement scalar crypts (fingerprint build 24614784) ---
+uint32_t decryption::PlayerWalkMovement::encrypt_capsule_height(float plain) {
+    uint32_t value = std::bit_cast<uint32_t>(plain);
+    value = (value << 4) | (value >> 28);
+    value ^= 0x4E67773Du;
+    value = (value << 26) | (value >> 6);
+    return value;
+}
+
+float decryption::PlayerWalkMovement::decrypt_capsule_height(uint32_t value) {
+    value = (value << 6) | (value >> 26);
+    value ^= 0x4E67773Du;
+    value = (value << 28) | (value >> 4);
+    return std::bit_cast<float>(value);
+}
+
+uint32_t decryption::PlayerWalkMovement::encrypt_capsule_center(float plain) {
+    uint32_t value = std::bit_cast<uint32_t>(plain);
+    value ^= 0xA63219C8u;
+    value = (value << 10) | (value >> 22);
+    value += 0x7983BF63u;
+    return value;
+}
+
+float decryption::PlayerWalkMovement::decrypt_capsule_center(uint32_t value) {
+    value -= 0x7983BF63u;
+    value = (value << 22) | (value >> 10);
+    value ^= 0xA63219C8u;
+    return std::bit_cast<float>(value);
+}
+
+uint32_t decryption::PlayerWalkMovement::encrypt_gravity_multiplier(float plain) {
+    uint32_t value = std::bit_cast<uint32_t>(plain);
+    value = (value << 6) | (value >> 26);
+    value ^= 0x0BF29DB8u;
+    value -= 0x14C9A8CCu;
+    return value;
+}
+
+float decryption::PlayerWalkMovement::decrypt_gravity_multiplier(uint32_t value) {
+    value += 0x14C9A8CCu;
+    value ^= 0x0BF29DB8u;
+    value = (value << 26) | (value >> 6);
+    return std::bit_cast<float>(value);
+}
+
+uint32_t decryption::PlayerWalkMovement::encrypt_ground_angle(float plain) {
+    uint32_t value = std::bit_cast<uint32_t>(plain);
+    value = (value << 10) | (value >> 22);
+    value -= 0x75B6E603u;
+    value ^= 0x883CD959u;
+    value += 0x5EF50FCAu;
+    return value;
+}
+
+float decryption::PlayerWalkMovement::decrypt_ground_angle(uint32_t value) {
+    value -= 0x5EF50FCAu;
+    value ^= 0x883CD959u;
+    value += 0x75B6E603u;
+    value = (value << 22) | (value >> 10);
+    return std::bit_cast<float>(value);
+}
+
+uint32_t decryption::PlayerWalkMovement::encrypt_ground_angles_new(float plain) {
+    uint32_t value = std::bit_cast<uint32_t>(plain);
+    value ^= 0xA89B4487u;
+    value += 0x271F08A0u;
+    value = (value << 15) | (value >> 17);
+    value += 0x35634C3Bu;
+    return value;
+}
+
+float decryption::PlayerWalkMovement::decrypt_ground_angles_new(uint32_t value) {
+    value -= 0x35634C3Bu;
+    value = (value << 17) | (value >> 15);
+    value -= 0x271F08A0u;
+    value ^= 0xA89B4487u;
+    return std::bit_cast<float>(value);
+}
+
+uint32_t decryption::PlayerWalkMovement::encrypt_ground_time(float plain) {
+    uint32_t value = std::bit_cast<uint32_t>(plain);
+    value += 0x5ED8266Au;
+    value = (value << 24) | (value >> 8);
+    value ^= 0x975CE3D8u;
+    value = (value << 22) | (value >> 10);
+    return value;
+}
+
+float decryption::PlayerWalkMovement::decrypt_ground_time(uint32_t value) {
+    value = (value << 10) | (value >> 22);
+    value ^= 0x975CE3D8u;
+    value = (value << 8) | (value >> 24);
+    value -= 0x5ED8266Au;
+    return std::bit_cast<float>(value);
+}
+
+uint32_t decryption::PlayerWalkMovement::encrypt_jump_time(float plain) {
+    uint32_t value = std::bit_cast<uint32_t>(plain);
+    value = (value << 7) | (value >> 25);
+    value -= 0x075CBAD0u;
+    value = (value << 7) | (value >> 25);
+    return value;
+}
+
+float decryption::PlayerWalkMovement::decrypt_jump_time(uint32_t value) {
+    value = (value << 25) | (value >> 7);
+    value += 0x075CBAD0u;
+    value = (value << 25) | (value >> 7);
+    return std::bit_cast<float>(value);
+}
+
+uint32_t decryption::PlayerWalkMovement::encrypt_land_time(float plain) {
+    uint32_t value = std::bit_cast<uint32_t>(plain);
+    value ^= 0x5D22278Eu;
+    value = (value << 14) | (value >> 18);
+    value -= 0x10EB2F11u;
+    value = (value << 23) | (value >> 9);
+    return value;
+}
+
+float decryption::PlayerWalkMovement::decrypt_land_time(uint32_t value) {
+    value = (value << 9) | (value >> 23);
+    value += 0x10EB2F11u;
+    value = (value << 18) | (value >> 14);
+    value ^= 0x5D22278Eu;
+    return std::bit_cast<float>(value);
+}
+
+uint32_t decryption::PlayerWalkMovement::encrypt_sprint_forced(bool plain) {
+    uint32_t value = plain ? 1u : 0u;
+    value += 0x379EE2C7u;
+    value ^= 0x66ECADA2u;
+    value += 0x49823E40u;
+    return value;
+}
+
+uint32_t decryption::PlayerWalkMovement::decrypt_sprint_forced(uint32_t value) {
+    value -= 0x49823E40u;
+    value ^= 0x66ECADA2u;
+    value -= 0x379EE2C7u;
+    return value;
+}
+
+uint32_t decryption::PlayerWalkMovement::encrypt_grounded(bool plain) {
+    uint32_t value = plain ? 1u : 0u;
+    value ^= 0x4E950628u;
+    value += 0x5025DDFAu;
+    value ^= 0xE0887AA0u;
+    value -= 0x69094678u;
+    return value;
+}
+
+uint32_t decryption::PlayerWalkMovement::decrypt_grounded(uint32_t value) {
+    value += 0x69094678u;
+    value ^= 0xE0887AA0u;
+    value -= 0x5025DDFAu;
+    value ^= 0x4E950628u;
+    return value;
+}
+
+uint32_t decryption::PlayerWalkMovement::encrypt_jumping(bool plain) {
+    uint32_t value = plain ? 1u : 0u;
+    value ^= 0x49358FC0u;
+    value = (value << 12) | (value >> 20);
+    value ^= 0xA5DCEB94u;
+    return value;
+}
+
+uint32_t decryption::PlayerWalkMovement::decrypt_jumping(uint32_t value) {
+    value ^= 0xA5DCEB94u;
+    value = (value << 20) | (value >> 12);
+    value ^= 0x49358FC0u;
+    return value;
+}
+
+uint32_t decryption::PlayerWalkMovement::encrypt_flying(bool plain) {
+    uint32_t value = plain ? 1u : 0u;
+    value = (value << 10) | (value >> 22);
+    value += 0x41C361D3u;
+    value = (value << 4) | (value >> 28);
+    value += 0x7BA47834u;
+    return value;
+}
+
+uint32_t decryption::PlayerWalkMovement::decrypt_flying(uint32_t value) {
+    value -= 0x7BA47834u;
+    value = (value << 28) | (value >> 4);
+    value -= 0x41C361D3u;
+    value = (value << 22) | (value >> 10);
+    return value;
+}
