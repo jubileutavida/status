@@ -1,0 +1,41 @@
+{
+  "generated": "2026-10-21T13:26:19Z",
+  "cheats": {
+    "advanced": {
+      "version": "v0.8",
+      "updated": "2026-10-19T20:12:24-03:00"
+    },
+    "pubg": {
+      "version": "v0.8",
+      "updated": "2026-10-21T10:15:30-03:00"
+    },
+    "fivem": {
+      "version": "v0.1",
+      "updated": "2026-07-03T21:42:05-03:00"
+    },
+    "roblox": {
+      "version": "v0.1",
+      "updated": "2026-08-07T13:00:35-03:00"
+    },
+    "dbd": {
+      "version": "v1.0",
+      "updated": "2026-10-20T11:02:00-03:00"
+    },
+    "farlight": {
+      "version": "v0.1",
+      "updated": "2026-10-04T14:31:28-03:00"
+    },
+    "blood": {
+      "version": "v0.7",
+      "updated": "2026-10-04T17:22:35Z"
+    },
+    "marvel": {
+      "version": "v0.0",
+      "updated": "2026-10-05T17:06:35-03:00"
+    },
+    "chameleon": {
+      "version": "v0.2",
+      "updated": "2026-10-03T18:27:13-03:00"
+    }
+  }
+}
