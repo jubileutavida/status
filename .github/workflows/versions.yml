@@ -1,0 +1,69 @@
+name: publish-versions
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "*.txt"
+  workflow_dispatch:
+  schedule:
+    - cron: "0 */6 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-versions
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build versions.json
+        run: |
+          python3 - <<'PY'
+          import datetime, json, os, subprocess
+
+          FILES = [
+              "advanced", "pubg", "fivem", "roblox", "dbd",
+              "farlight", "blood", "marvel", "chameleon",
+          ]
+
+          cheats = {}
+          for name in FILES:
+              path = name + ".txt"
+              if not os.path.exists(path):
+                  continue
+              version = open(path, encoding="utf-8").read().strip()
+              updated = subprocess.check_output(
+                  ["git", "log", "-1", "--format=%cI", "--", path], text=True
+              ).strip()
+              cheats[name] = {"version": version, "updated": updated}
+
+          payload = {
+              "generated": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+              "cheats": cheats,
+          }
+
+          with open("versions.json", "w", encoding="utf-8", newline="\n") as fh:
+              json.dump(payload, fh, indent=2)
+              fh.write("\n")
+          PY
+
+      - name: Commit versions.json
+        run: |
+          git config user.name "kernel-status-bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add versions.json
+          if git diff --staged --quiet; then
+            echo "versions.json already up to date"
+            exit 0
+          fi
+          git commit -m "chore: refresh versions.json"
+          git push
